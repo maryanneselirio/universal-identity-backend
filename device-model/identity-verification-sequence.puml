@@ -1,0 +1,10 @@
+@startuml
+actor DeviceAgent
+participant CoordinatorAgent
+participant Blockchain
+
+DeviceAgent -> CoordinatorAgent: IdentityRequest
+CoordinatorAgent -> Blockchain: VerifyIdentity(credentials)
+Blockchain -> CoordinatorAgent: VerificationResult (approved/denied)
+CoordinatorAgent -> DeviceAgent: IdentityVerification(approved)
+@enduml

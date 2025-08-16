@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "RegisterMaintenanceEventMessage",
+    "type": "object",
+    "properties": {
+      "type": { "const": "RegisterMaintenanceEvent" },
+      "from": { "type": "string" },
+      "timestamp": { "type": "string", "format": "date-time" },
+      "payload": {
+        "type": "object",
+        "properties": {
+          "eventType": { "type": "string", "enum": ["firmwareUpgrade", "repair", "inspection"] },
+          "oldVersion": { "type": "string" },
+          "newVersion": { "type": "string" },
+          "performedBy": { "type": "string" }
+        },
+        "required": ["eventType", "oldVersion", "newVersion", "performedBy"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["type", "from", "timestamp", "payload"],
+    "additionalProperties": false
+  }
+  

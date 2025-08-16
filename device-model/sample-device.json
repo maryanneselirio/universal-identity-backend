@@ -1,0 +1,13 @@
+{
+    "agentId": "device-123456789",
+    "role": "sensor",
+    "state": "active",
+    "metadata": {
+      "deviceType": "temperatureSensor",
+      "manufacturer": "AcmeCorp",
+      "firmwareVersion": "1.2.3",
+      "publicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqh...\n-----END PUBLIC KEY-----"
+    },
+    "createdAt": "2025-08-13T19:00:00Z"
+  }
+  

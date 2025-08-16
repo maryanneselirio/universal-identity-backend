@@ -1,0 +1,21 @@
+{
+  "name": "identity-chaincode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/identity-contract.js",
+  "scripts": {
+    "start": "fabric-chaincode-node start",
+    "test": "mocha test/identity-contract-simple.test.js --timeout 5000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fabric-contract-api": "^2.5.8",
+    "fabric-shim": "^2.5.8"
+  },
+  "devDependencies": {
+    "chai": "^5.2.1",
+    "mocha": "^11.7.1"
+  }
+}

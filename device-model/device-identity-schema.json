@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "DeviceAgent",
+    "type": "object",
+    "properties": {
+      "agentId": {
+        "type": "string",
+        "description": "Unique identifier for the device agent"
+      },
+      "role": {
+        "type": "string",
+        "enum": ["sensor", "validator", "userDevice"],
+        "description": "Role or classification of the device"
+      },
+      "state": {
+        "type": "string",
+        "enum": ["active", "suspended", "revoked"],
+        "description": "Operational state of the device"
+      },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "deviceType": { "type": "string" },
+          "manufacturer": { "type": "string" },
+          "firmwareVersion": { "type": "string" },
+          "publicKey": { "type": "string" }
+        },
+        "required": ["deviceType"]
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time",
+        "description": "ISO 8601 timestamp when the device was registered"
+      }
+    },
+    "required": ["agentId", "role", "state", "metadata", "createdAt"],
+    "additionalProperties": false
+  }
+  

@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "IdentityVerificationMessage",
+    "type": "object",
+    "properties": {
+      "type": { "const": "IdentityVerification" },
+      "from": { "type": "string" },
+      "to": { "type": "string" },
+      "timestamp": { "type": "string", "format": "date-time" },
+      "payload": {
+        "type": "object",
+        "properties": {
+          "verificationStatus": { "type": "string", "enum": ["approved", "denied"] },
+          "reason": { "type": "string" }
+        },
+        "required": ["verificationStatus", "reason"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["type", "from", "to", "timestamp", "payload"],
+    "additionalProperties": false
+  }
+  

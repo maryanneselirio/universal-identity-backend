@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "ajv-formats": "^3.0.1"
+  },
+  "name": "device-model",
+  "version": "1.0.0",
+  "description": "",
+  "main": "validate-all.js",
+  "devDependencies": {},
+  "scripts": {
+  "test": "node validate-all.js"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,12 @@
+{
+    "type": "RegisterMaintenanceEvent",
+    "from": "device-123456",
+    "timestamp": "2025-08-13T19:06:00Z",
+    "payload": {
+      "eventType": "firmwareUpgrade",
+      "oldVersion": "1.2.3",
+      "newVersion": "1.2.4",
+      "performedBy": "Technician-X"
+    }
+  }
+  

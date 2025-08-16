@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "IdentityRequestMessage",
+    "type": "object",
+    "properties": {
+      "type": { "const": "IdentityRequest" },
+      "from": { "type": "string" },
+      "to": { "type": "string" },
+      "timestamp": { "type": "string", "format": "date-time" },
+      "payload": {
+        "type": "object",
+        "properties": {
+          "requestType": { "type": "string", "enum": ["authenticate", "register"] },
+          "credentials": { "type": "string" }
+        },
+        "required": ["requestType", "credentials"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["type", "from", "to", "timestamp", "payload"],
+    "additionalProperties": false
+  }
+  

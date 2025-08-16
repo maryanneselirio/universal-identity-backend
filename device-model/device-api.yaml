@@ -1,0 +1,152 @@
+openapi: "3.0.3"
+info:
+  title: "Device Agent Message API"
+  description: "API specification for MAS message templates: IdentityRequest, IdentityVerification, RegisterMaintenanceEvent."
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:3000/api"
+paths:
+  /identity/request:
+    post:
+      summary: "Send an Identity Request message"
+      operationId: "sendIdentityRequest"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityRequest"
+      responses:
+        "200":
+          description: "Message accepted"
+  /identity/verify:
+    post:
+      summary: "Send an Identity Verification message"
+      operationId: "sendIdentityVerification"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityVerification"
+      responses:
+        "200":
+          description: "Message accepted"
+  /device/maintenance-event:
+    post:
+      summary: "Register a Maintenance Event message"
+      operationId: "registerMaintenanceEvent"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterMaintenanceEvent"
+      responses:
+        "200":
+          description: "Message accepted"
+components:
+  schemas:
+    IdentityRequest:
+      type: "object"
+      required:
+        - "type"
+        - "from"
+        - "to"
+        - "timestamp"
+        - "payload"
+      properties:
+        type:
+          type: "string"
+          enum:
+            - "IdentityRequest"
+        from:
+          type: "string"
+        to:
+          type: "string"
+        timestamp:
+          type: "string"
+          format: "date-time"
+        payload:
+          type: "object"
+          required:
+            - "requestType"
+            - "credentials"
+          properties:
+            requestType:
+              type: "string"
+              enum:
+                - "authenticate"
+                - "register"
+            credentials:
+              type: "string"
+    IdentityVerification:
+      type: "object"
+      required:
+        - "type"
+        - "from"
+        - "to"
+        - "timestamp"
+        - "payload"
+      properties:
+        type:
+          type: "string"
+          enum:
+            - "IdentityVerification"
+        from:
+          type: "string"
+        to:
+          type: "string"
+        timestamp:
+          type: "string"
+          format: "date-time"
+        payload:
+          type: "object"
+          required:
+            - "verificationStatus"
+            - "reason"
+          properties:
+            verificationStatus:
+              type: "string"
+              enum:
+                - "approved"
+                - "denied"
+            reason:
+              type: "string"
+    RegisterMaintenanceEvent:
+      type: "object"
+      required:
+        - "type"
+        - "from"
+        - "timestamp"
+        - "payload"
+      properties:
+        type:
+          type: "string"
+          enum:
+            - "RegisterMaintenanceEvent"
+        from:
+          type: "string"
+        timestamp:
+          type: "string"
+          format: "date-time"
+        payload:
+          type: "object"
+          required:
+            - "eventType"
+            - "oldVersion"
+            - "newVersion"
+            - "performedBy"
+          properties:
+            eventType:
+              type: "string"
+              enum:
+                - "firmwareUpgrade"
+                - "repair"
+                - "inspection"
+            oldVersion:
+              type: "string"
+            newVersion:
+              type: "string"
+            performedBy:
+              type: "string"

@@ -1,0 +1,10 @@
+@startuml IdentityRequestFlow
+participant DeviceAgent
+participant CoordinatorAgent
+participant MockServer
+
+DeviceAgent -> CoordinatorAgent: POST /identity/request\n{JSON payload}
+CoordinatorAgent -> MockServer: validate and forward
+MockServer --> CoordinatorAgent: 200 OK\n{status: success,...}
+CoordinatorAgent --> DeviceAgent: 200 OK\n{status: success,...}
+@enduml

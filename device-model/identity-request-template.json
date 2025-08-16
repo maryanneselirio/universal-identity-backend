@@ -1,0 +1,11 @@
+{
+    "type": "IdentityRequest",
+    "from": "device-123456",
+    "to": "identityCoordinator",
+    "timestamp": "2025-08-13T19:05:00Z",
+    "payload": {
+      "requestType": "authenticate",
+      "credentials": "base64encodedCreds"
+    }
+  }
+  
