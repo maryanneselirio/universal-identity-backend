@@ -10,6 +10,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Health check
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok' });
+});
+
 const CONNECTION_PROFILE = path.resolve(__dirname, 'connection-org1.json');
 const CHANNEL_NAME       = 'mychannel';
 const CHAINCODE_NAME     = 'identity-chaincode';
@@ -33,17 +38,18 @@ async function newGateway() {
   await gateway.connect(ccp, {
     wallet,
     identity: 'admin',
-    discovery: { enabled: false }  // ← DISABLED
+    discovery: { enabled: false }
   });
   return gateway;
 }
 
-app.get('/identities', async (req, res) => {
+// List all identities
+app.get('/api/identity/list', async (req, res) => {
   const gateway = await newGateway();
   try {
-    const network = await gateway.getNetwork(CHANNEL_NAME);
+    const network  = await gateway.getNetwork(CHANNEL_NAME);
     const contract = network.getContract(CHAINCODE_NAME);
-    const result = await contract.evaluateTransaction('GetAllIdentities');
+    const result   = await contract.evaluateTransaction('GetAllIdentities');
     res.json(JSON.parse(result.toString()));
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -52,14 +58,15 @@ app.get('/identities', async (req, res) => {
   }
 });
 
-app.post('/identity', async (req, res) => {
+// Register a new identity
+app.post('/api/identity/register', async (req, res) => {
   const gateway = await newGateway();
   try {
-    const { id, type, data } = req.body;
-    const network = await gateway.getNetwork(CHANNEL_NAME);
+    const { assetType, assetId, metadata } = req.body;
+    const network  = await gateway.getNetwork(CHANNEL_NAME);
     const contract = network.getContract(CHAINCODE_NAME);
-    const payload = JSON.stringify({ id, type, data });
-    const result = await contract.submitTransaction('RegisterIdentity', payload);
+    const payload  = JSON.stringify({ assetType, assetId, metadata });
+    const result   = await contract.submitTransaction('RegisterIdentity', payload);
     res.json(JSON.parse(result.toString()));
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -68,19 +75,28 @@ app.post('/identity', async (req, res) => {
   }
 });
 
-app.get('/contract-info', async (req, res) => {
+// Get chaincode contract info
+app.get('/api/identity/contract', async (req, res) => {
   const gateway = await newGateway();
   try {
-    const network = await gateway.getNetwork(CHANNEL_NAME);
+    const network  = await gateway.getNetwork(CHANNEL_NAME);
     const contract = network.getContract(CHAINCODE_NAME);
-    const result = await contract.evaluateTransaction('GetContractInfo');
+    const result   = await contract.evaluateTransaction('GetContractInfo');
     res.json(JSON.parse(result.toString()));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   } finally {
     gateway.disconnect();
   }
 });
 
+// Start server on dynamic port
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`API listening on http://localhost:${PORT}`);
+  console.log(`API listening on port ${PORT}`);
+  if (process.env.BASE_URL) {
+    console.log(`Available at ${process.env.BASE_URL}`);
+  } else {
+    console.log(`Local URL: http://localhost:${PORT}`);
+  }
 });
