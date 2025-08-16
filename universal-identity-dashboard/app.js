@@ -180,7 +180,7 @@ class MultiAgentCoordinator {
                 consensus,
                 finalDecision,
                 processingTime: Date.now() - coordinationStart,
-                byzantineDetected: agentEvaluations.some(eval => eval.isByzantine)
+                byzantineDetected: agentEvaluations.some(evaluation => evaluation.isByzantine)
             };
 
             this.coordinationHistory.push(coordinationSession);
@@ -205,12 +205,12 @@ class MultiAgentCoordinator {
     }
 
     calculateConsensus(evaluations) {
-        const approvals = evaluations.filter(eval => eval.decision === 'APPROVED').length;
+        const approvals = evaluations.filter(evaluation => evaluation.decision === 'APPROVED').length;
         const totalAgents = evaluations.length;
         const consensusRatio = approvals / totalAgents;
         
-        const averageConfidence = evaluations.reduce((sum, eval) => sum + eval.confidence, 0) / totalAgents;
-        const averageSecurityScore = evaluations.reduce((sum, eval) => sum + eval.securityScore, 0) / totalAgents;
+        const averageConfidence = evaluations.reduce((sum, evaluation) => sum + evaluation.confidence, 0) / totalAgents;
+        const averageSecurityScore = evaluations.reduce((sum, evaluation) => sum + evaluation.securityScore, 0) / totalAgents;
 
         return {
             approvals,
@@ -226,13 +226,13 @@ class MultiAgentCoordinator {
 
     handleByzantineFaults(consensus, evaluations) {
         // Detect Byzantine agents
-        const byzantineAgents = evaluations.filter(eval => eval.isByzantine);
+        const byzantineAgents = evaluations.filter(evaluation => evaluation.isByzantine);
         
         if (byzantineAgents.length > 0) {
             console.log(`🚨 Byzantine fault detected: ${byzantineAgents.length} malicious agents`);
             
             // Recalculate consensus excluding Byzantine agents
-            const honestEvaluations = evaluations.filter(eval => !eval.isByzantine);
+            const honestEvaluations = evaluations.filter(evaluation => !evaluation.isByzantine);
             const honestConsensus = this.calculateConsensus(honestEvaluations);
             
             return {
