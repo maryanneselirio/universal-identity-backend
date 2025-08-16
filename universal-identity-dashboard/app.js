@@ -1,10 +1,16 @@
 require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+const express    = require('express');
+const cors       = require('cors');
 const bodyParser = require('body-parser');
 const { Gateway, Wallets } = require('fabric-network');
-const fs = require('fs');
-const path = require('path');
+const fs         = require('fs');
+const path       = require('path');
+
+console.log('process.cwd():', process.cwd());
+console.log('__dirname:', __dirname);
+console.log('Expecting connection profile at:', path.resolve(__dirname, 'connection-org1.json'));
+console.log('Expecting admin cert at:', path.resolve(__dirname, 'admin-cert.pem'));
+console.log('Expecting admin key at:', path.resolve(__dirname, 'admin-key.pem'));
 
 const app = express();
 app.use(cors());
@@ -20,8 +26,10 @@ const CHANNEL_NAME       = 'mychannel';
 const CHAINCODE_NAME     = 'identity-chaincode';
 
 async function getAdminIdentity() {
-  const cert = fs.readFileSync(path.resolve(__dirname, 'admin-cert.pem')).toString();
-  const key  = fs.readFileSync(path.resolve(__dirname, 'admin-key.pem')).toString();
+  const certPath = path.resolve(__dirname, 'admin-cert.pem');
+  const keyPath  = path.resolve(__dirname, 'admin-key.pem');
+  const cert = fs.readFileSync(certPath).toString();
+  const key  = fs.readFileSync(keyPath).toString();
   return {
     credentials: { certificate: cert, privateKey: key },
     mspId: 'Org1MSP',
@@ -30,10 +38,9 @@ async function getAdminIdentity() {
 }
 
 async function newGateway() {
-  const ccp    = JSON.parse(fs.readFileSync(CONNECTION_PROFILE, 'utf8'));
+  const ccp = JSON.parse(fs.readFileSync(CONNECTION_PROFILE, 'utf8'));
   const wallet = await Wallets.newInMemoryWallet();
   await wallet.put('admin', await getAdminIdentity());
-
   const gateway = new Gateway();
   await gateway.connect(ccp, {
     wallet,
