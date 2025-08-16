@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const axios = require('axios');
 const path = require('path');
 
@@ -10,8 +9,9 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json()); // Built-in JSON parsing in Express 4.16+
+app.use(express.urlencoded({ extended: true })); // Built-in URL encoding
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
 // Kaleido REST API configuration
 const KALEIDO_CONFIG = {
@@ -47,12 +47,10 @@ app.get('/health', (req, res) => {
 // Enhanced metrics endpoint for dashboard
 app.get('/api/metrics', async (req, res) => {
     try {
-        // Try to get real metrics from Kaleido network
         let totalAssets = 1247; // Default fallback
         let networkStatus = 'healthy';
         
         try {
-            // Attempt to query chaincode for real metrics
             const response = await axios({
                 ...KALEIDO_CONFIG,
                 method: 'POST',
@@ -68,12 +66,11 @@ app.get('/api/metrics', async (req, res) => {
             }
         } catch (error) {
             console.warn('Could not fetch real metrics from chaincode:', error.message);
-            // Continue with fallback data
         }
 
         const metrics = {
             totalAssets: totalAssets,
-            activeAgents: 3, // Your Kaleido network nodes
+            activeAgents: 3,
             successRate: '99.8%',
             responseTime: '0.8s'
         };
@@ -121,7 +118,7 @@ app.get('/api/metrics', async (req, res) => {
     }
 });
 
-// Demo endpoints that use Kaleido REST API
+// Demo endpoints
 app.post('/api/demo/:demoType', async (req, res) => {
     const { demoType } = req.params;
     
@@ -164,7 +161,7 @@ app.post('/api/demo/:demoType', async (req, res) => {
     }
 });
 
-// Identity list endpoint using Kaleido REST API
+// Identity endpoints
 app.get('/api/identity/list', async (req, res) => {
     try {
         console.log('🔍 Querying all identities from Kaleido network...');
@@ -201,7 +198,6 @@ app.get('/api/identity/list', async (req, res) => {
     }
 });
 
-// Identity registration endpoint using Kaleido REST API
 app.post('/api/identity/register', async (req, res) => {
     try {
         const { id, type, metadata } = req.body;
@@ -247,7 +243,7 @@ app.post('/api/identity/register', async (req, res) => {
     }
 });
 
-// Demo helper functions using Kaleido REST API
+// Demo helper functions
 async function registerDemoVehicle() {
     const vehicleId = `DEMO-VEH-${Date.now()}`;
     
@@ -285,7 +281,6 @@ async function registerDemoVehicle() {
 
 async function testNetworkConsensus() {
     try {
-        // Test network health by calling a simple query
         await axios({
             ...KALEIDO_CONFIG,
             method: 'POST',
@@ -346,12 +341,12 @@ async function queryAllIdentities() {
     }
 }
 
-// Catch-all route to serve dashboard
+// Catch-all route for dashboard
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Error handling middleware
+// Error handling
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
     res.status(500).json({
@@ -368,7 +363,7 @@ app.listen(PORT, () => {
     console.log(`🔍 Health: ${process.env.BASE_URL || `http://localhost:${PORT}`}/health`);
     console.log(`📈 Metrics: ${process.env.BASE_URL || `http://localhost:${PORT}`}/api/metrics`);
     console.log('🔗 Connected to Kaleido Hyperledger Fabric Network via REST API');
-    console.log('✨ No local certificates or connection profiles needed!');
+    console.log('✨ Using Express 4.x for maximum compatibility!');
 });
 
 module.exports = app;
