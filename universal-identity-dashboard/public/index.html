@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Digital Identity Framework | Kaleido + Hyperledger Fabric</title>
+    <title>Universal Digital Identity Framework | Multi-Agent Coordination System</title>
     <style>
         * {
             margin: 0;
@@ -109,7 +109,7 @@
 
         .metrics-row {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 1.5rem;
             margin-bottom: 2rem;
             grid-column: 1 / -1;
@@ -191,6 +191,77 @@
             font-weight: 700;
         }
 
+        /* Multi-Agent Specific Styles */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .agent-id {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #10b981;
+        }
+
+        .agent-status {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .agent-status.online {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .agent-status.byzantine {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .agent-specialization {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .agent-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+        }
+
         .demo-buttons {
             display: flex;
             flex-direction: column;
@@ -211,6 +282,18 @@
             font-size: 0.9rem;
             position: relative;
             overflow: hidden;
+        }
+
+        .demo-button.byzantine {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        }
+
+        .demo-button.coordination {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        }
+
+        .demo-button.cross-domain {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         }
 
         .demo-button::before {
@@ -243,57 +326,70 @@
             animation: pulse 1.5s infinite;
         }
 
-        .activity-feed {
-            max-height: 350px;
+        .coordination-history {
+            max-height: 300px;
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: rgba(16, 185, 129, 0.5) transparent;
         }
 
-        .activity-feed::-webkit-scrollbar {
-            width: 6px;
+        .coordination-item {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
         }
 
-        .activity-feed::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+        .coordination-item.rejected {
+            border-left-color: #f87171;
         }
 
-        .activity-feed::-webkit-scrollbar-thumb {
-            background: rgba(16, 185, 129, 0.5);
-            border-radius: 3px;
+        .coordination-item.byzantine {
+            border-left-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
         }
 
-        .activity-item {
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .coordination-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
         }
 
-        .activity-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            margin: 0 -1rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            border-radius: 8px;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-text {
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .activity-time {
-            font-size: 0.8rem;
-            opacity: 0.7;
+        .coordination-id {
+            font-weight: 600;
+            font-size: 0.85rem;
             color: #10b981;
+        }
+
+        .coordination-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .coordination-details {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .consensus-indicator {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .consensus-indicator.approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .consensus-indicator.rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
         }
 
         .loading-spinner {
@@ -336,35 +432,12 @@
             color: #f87171;
         }
 
-        .api-endpoint {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 0.8rem;
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
-            font-size: 0.85rem;
-            margin: 0.8rem 0;
-            border-left: 4px solid #10b981;
-        }
-
-        .tech-stack {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .tech-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
         @media (max-width: 1200px) {
             .dashboard-content {
                 grid-template-columns: 1fr 1fr;
+            }
+            .metrics-row {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
@@ -396,12 +469,16 @@
         <h1>Universal Digital Identity Framework</h1>
         <div class="network-badge">
             <div class="status-dot"></div>
-            Kaleido + Hyperledger Fabric
+            Multi-Agent Coordination System
         </div>
         <div class="status-indicators">
             <div class="status-item">
                 <div class="status-dot" id="system-status"></div>
                 <span id="system-text">System Online</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" id="agent-status"></div>
+                <span id="agent-text">Agents Active</span>
             </div>
             <div class="status-item">
                 <div class="status-dot" id="network-status"></div>
@@ -411,89 +488,87 @@
     </header>
 
     <nav class="nav-tabs">
-        <div class="nav-tab active">Live Dashboard</div>
-        <div class="nav-tab">Identity Registry</div>
-        <div class="nav-tab">Blockchain Explorer</div>
-        <div class="nav-tab">API Documentation</div>
-        <div class="nav-tab">Network Analytics</div>
+        <div class="nav-tab active" data-tab="dashboard">Multi-Agent Dashboard</div>
+        <div class="nav-tab" data-tab="coordination">Coordination History</div>
+        <div class="nav-tab" data-tab="agents">Agent Status</div>
+        <div class="nav-tab" data-tab="demos">Live Demos</div>
+        <div class="nav-tab" data-tab="blockchain">Blockchain Explorer</div>
     </nav>
 
     <main class="dashboard-content">
+        <!-- Metrics Row -->
         <div class="metrics-row">
             <div class="metric-card">
                 <div class="metric-title">Total Identities</div>
                 <div class="metric-value" id="total-assets">Loading...</div>
             </div>
             <div class="metric-card">
-                <div class="metric-title">Network Nodes</div>
+                <div class="metric-title">Active Agents</div>
                 <div class="metric-value" id="active-agents">3</div>
             </div>
             <div class="metric-card">
-                <div class="metric-title">Success Rate</div>
-                <div class="metric-value" id="success-rate">99.8%</div>
+                <div class="metric-title">Consensus Rate</div>
+                <div class="metric-value" id="consensus-rate">99.2%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-title">Response Time</div>
+                <div class="metric-title">Avg Response Time</div>
                 <div class="metric-value" id="response-time">0.8s</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Byzantine Tolerance</div>
+                <div class="metric-value" id="byzantine-tolerance">ACTIVE</div>
             </div>
         </div>
 
+        <!-- Multi-Agent System Status -->
         <div class="card">
-            <h3>🚀 Live Network Demos</h3>
+            <h3>🤖 Multi-Agent System Status</h3>
+            <div class="agent-grid" id="agent-grid">
+                <div class="agent-card">
+                    <div class="agent-header">
+                        <div class="agent-id">Loading...</div>
+                        <div class="agent-status online">ONLINE</div>
+                    </div>
+                    <div class="agent-specialization">Loading agents...</div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+                <strong>System Health:</strong> <span id="system-health">Evaluating...</span><br>
+                <strong>Last Coordination:</strong> <span id="last-coordination">Never</span><br>
+                <strong>Total Coordinations:</strong> <span id="total-coordinations">0</span>
+            </div>
+        </div>
+
+        <!-- Live Demos -->
+        <div class="card">
+            <h3>🚀 Multi-Agent Live Demos</h3>
             <div class="demo-buttons">
                 <button class="demo-button" onclick="runDemo('vehicle-registration')">
-                    🚗 Register Vehicle Identity
+                    🚗 Vehicle Registration with Agent Consensus
                 </button>
-                <button class="demo-button" onclick="runDemo('byzantine-fault-test')">
-                    ⚡ Test Network Consensus
+                <button class="demo-button coordination" onclick="runDemo('multi-agent-coordination')">
+                    🤖 Multi-Agent Coordination Demo
                 </button>
-                <button class="demo-button" onclick="runDemo('cross-domain-query')">
-                    🔍 Query All Identities
+                <button class="demo-button byzantine" onclick="runDemo('byzantine-fault-test')">
+                    ⚡ Byzantine Fault Tolerance Test
+                </button>
+                <button class="demo-button cross-domain" onclick="runDemo('cross-domain-validation')">
+                    🔍 Cross-Domain Validation Demo
                 </button>
             </div>
             <div id="demo-results"></div>
         </div>
 
+        <!-- Coordination History -->
         <div class="card">
-            <h3>📊 Network Activity</h3>
-            <div class="activity-feed" id="activity-feed">
-                <div class="activity-item">
-                    <div class="activity-text">🔄 Loading blockchain activity...</div>
-                    <div class="activity-time">Just now</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>🏗️ Architecture Overview</h3>
-            <div style="font-size: 0.95rem; line-height: 1.7;">
-                <p><strong>🌐 API Endpoint:</strong></p>
-                <div class="api-endpoint" id="api-base-url">Loading...</div>
-                
-                <div class="tech-stack">
-                    <div class="tech-item">
-                        <div>🔗 Hyperledger Fabric</div>
-                        <small>Blockchain Network</small>
+            <h3>📊 Recent Coordination History</h3>
+            <div class="coordination-history" id="coordination-history">
+                <div class="coordination-item">
+                    <div class="coordination-header">
+                        <div class="coordination-id">Loading coordination history...</div>
+                        <div class="coordination-time">Just now</div>
                     </div>
-                    <div class="tech-item">
-                        <div>☁️ Kaleido Platform</div>
-                        <small>Managed Hosting</small>
-                    </div>
-                    <div class="tech-item">
-                        <div>⚡ Node.js + Express</div>
-                        <small>API Backend</small>
-                    </div>
-                    <div class="tech-item">
-                        <div>🚀 Render Deployment</div>
-                        <small>Cloud Hosting</small>
-                    </div>
-                </div>
-
-                <p style="margin-top: 1.5rem;"><strong>🎯 Supported Assets:</strong></p>
-                <div style="margin: 1rem 0;">
-                    <div style="padding: 0.5rem 0;">🚗 <strong>Vehicles:</strong> VIN-based registration & tracking</div>
-                    <div style="padding: 0.5rem 0;">🐕 <strong>Pet Identity:</strong> Collars, tags, and health records</div>
-                    <div style="padding: 0.5rem 0;">🌐 <strong>IoT Devices:</strong> Smart sensors and connected devices</div>
+                    <div class="coordination-details">Initializing multi-agent system...</div>
                 </div>
             </div>
         </div>
@@ -501,7 +576,7 @@
 
     <script>
         const API_BASE_URL = window.location.origin;
-        document.getElementById('api-base-url').textContent = API_BASE_URL;
+        let currentAgentData = null;
 
         async function runDemo(demoType) {
             const button = event.target;
@@ -524,8 +599,8 @@
                         <div class="success-message">
                             <strong>✅ ${demoType} completed successfully!</strong>
                             <div style="margin-top: 1rem; font-size: 0.9rem; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
-                                <strong>Response:</strong><br>
-                                <pre style="font-size: 0.8rem; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
+                                <strong>Multi-Agent Response:</strong><br>
+                                <pre style="font-size: 0.8rem; overflow-x: auto; white-space: pre-wrap;">${JSON.stringify(data.data, null, 2)}</pre>
                             </div>
                         </div>
                     `;
@@ -545,7 +620,10 @@
             } finally {
                 button.classList.remove('loading');
                 button.innerHTML = originalText;
-                setTimeout(() => loadMetrics(), 1000);
+                setTimeout(() => {
+                    loadAgentStatus();
+                    loadCoordinationHistory();
+                }, 1000);
             }
         }
 
@@ -556,54 +634,142 @@
                 
                 if (data.success) {
                     document.getElementById('total-assets').textContent = data.metrics.totalAssets.toLocaleString();
-                    document.getElementById('active-agents').textContent = data.metrics.activeAgents;
-                    document.getElementById('success-rate').textContent = data.metrics.successRate;
+                    document.getElementById('active-agents').textContent = data.metrics.activeAgents || data.metrics.totalAgents;
+                    document.getElementById('consensus-rate').textContent = data.metrics.successRate;
                     document.getElementById('response-time').textContent = data.metrics.responseTime;
+                    document.getElementById('byzantine-tolerance').textContent = data.metrics.byzantineTolerance?.toUpperCase() || 'ACTIVE';
                     
-                    const activityFeed = document.getElementById('activity-feed');
-                    if (data.recentActivity && data.recentActivity.length > 0) {
-                        activityFeed.innerHTML = data.recentActivity.map(activity => `
-                            <div class="activity-item">
-                                <div class="activity-text">
-                                    ${getActivityIcon(activity.type)} ${activity.action}
-                                </div>
-                                <div class="activity-time">${new Date(activity.timestamp).toLocaleTimeString()}</div>
-                            </div>
-                        `).join('');
-                    }
+                    // Update system health indicators
+                    updateSystemStatus(true);
+                    updateAgentStatus(data.multiAgentSystem?.systemHealth === 'healthy');
                 } else {
-                    document.getElementById('total-assets').textContent = 'Error';
-                    updateSystemStatus(false);
+                    throw new Error(data.error || 'Failed to load metrics');
                 }
             } catch (error) {
                 console.error('Failed to load metrics:', error);
-                document.getElementById('total-assets').textContent = 'Offline';
+                document.getElementById('total-assets').textContent = 'Error';
                 updateSystemStatus(false);
+                updateAgentStatus(false);
             }
         }
 
-        function getActivityIcon(type) {
-            const icons = {
-                vehicle: '🚗',
-                pet: '🐕',
-                'iot-device': '📱',
-                system: '⚡'
-            };
-            return icons[type] || '📋';
+        async function loadAgentStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/agents/status`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentAgentData = data;
+                    updateAgentGrid(data.agents);
+                    updateSystemMetrics(data.systemMetrics);
+                    updateAgentStatus(data.systemMetrics.onlineAgents >= 2);
+                } else {
+                    throw new Error(data.error || 'Failed to load agent status');
+                }
+            } catch (error) {
+                console.error('Failed to load agent status:', error);
+                updateAgentStatus(false);
+            }
+        }
+
+        async function loadCoordinationHistory() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/agents/coordination-history?limit=10`);
+                const data = await response.json();
+                
+                if (data.success && data.coordinationHistory.length > 0) {
+                    updateCoordinationHistory(data.coordinationHistory);
+                }
+            } catch (error) {
+                console.error('Failed to load coordination history:', error);
+            }
+        }
+
+        function updateAgentGrid(agents) {
+            const agentGrid = document.getElementById('agent-grid');
+            
+            agentGrid.innerHTML = agents.map(agent => `
+                <div class="agent-card">
+                    <div class="agent-header">
+                        <div class="agent-id">${agent.agentId}</div>
+                        <div class="agent-status ${agent.status} ${agent.isByzantine ? 'byzantine' : ''}">
+                            ${agent.isByzantine ? 'BYZANTINE' : agent.status.toUpperCase()}
+                        </div>
+                    </div>
+                    <div class="agent-specialization">${agent.specialization.toUpperCase()} AGENT</div>
+                    <div class="agent-metrics">
+                        <div>Decisions: ${agent.performanceMetrics.decisionsParticipated}</div>
+                        <div>Agreement: ${Math.round(agent.performanceMetrics.agreementRate * 100)}%</div>
+                        <div>Avg Response: ${Math.round(agent.performanceMetrics.avgResponseTime)}ms</div>
+                        <div>Last Seen: ${new Date(agent.lastSeen).toLocaleTimeString()}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSystemMetrics(metrics) {
+            document.getElementById('system-health').textContent = 
+                metrics.onlineAgents >= 2 ? 'Healthy' : 'Degraded';
+            document.getElementById('total-coordinations').textContent = metrics.totalCoordinations || 0;
+            
+            if (metrics.totalCoordinations > 0) {
+                document.getElementById('last-coordination').textContent = 'Recently';
+            }
+        }
+
+        function updateCoordinationHistory(history) {
+            const historyDiv = document.getElementById('coordination-history');
+            
+            historyDiv.innerHTML = history.slice(0, 5).map(session => `
+                <div class="coordination-item ${session.finalDecision === 'REJECTED' ? 'rejected' : ''} ${session.byzantineDetected ? 'byzantine' : ''}">
+                    <div class="coordination-header">
+                        <div class="coordination-id">${session.coordinationId}</div>
+                        <div class="coordination-time">${new Date(session.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                    <div class="coordination-details">
+                        Identity: ${session.identityId}<br>
+                        Agents: ${session.participatingAgents} | Processing: ${session.processingTime}ms
+                        ${session.byzantineDetected ? '<br><strong>⚠️ Byzantine fault detected & handled</strong>' : ''}
+                    </div>
+                    <div class="consensus-indicator ${session.finalDecision === 'APPROVED' ? 'approved' : 'rejected'}">
+                        ${session.finalDecision} (${Math.round(session.consensus.consensusRatio * 100)}% consensus)
+                    </div>
+                </div>
+            `).join('');
         }
 
         function updateSystemStatus(isOnline = true) {
             const systemStatus = document.getElementById('system-status');
             const systemText = document.getElementById('system-text');
-            const networkStatus = document.getElementById('network-status');
             
             if (isOnline) {
                 systemStatus.style.background = '#10b981';
                 systemText.textContent = 'System Online';
-                networkStatus.style.background = '#10b981';
             } else {
                 systemStatus.style.background = '#ef4444';
                 systemText.textContent = 'System Offline';
+            }
+        }
+
+        function updateAgentStatus(isHealthy = true) {
+            const agentStatus = document.getElementById('agent-status');
+            const agentText = document.getElementById('agent-text');
+            
+            if (isHealthy) {
+                agentStatus.style.background = '#10b981';
+                agentText.textContent = 'Agents Healthy';
+            } else {
+                agentStatus.style.background = '#ef4444';
+                agentText.textContent = 'Agents Degraded';
+            }
+        }
+
+        function updateNetworkStatus(isOnline = true) {
+            const networkStatus = document.getElementById('network-status');
+            
+            if (isOnline) {
+                networkStatus.style.background = '#10b981';
+            } else {
                 networkStatus.style.background = '#ef4444';
             }
         }
@@ -612,23 +778,36 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/health`);
                 const data = await response.json();
+                
                 updateSystemStatus(data.status === 'ok');
+                updateNetworkStatus(data.status === 'ok');
+                
+                if (data.multiAgentSystem) {
+                    updateAgentStatus(data.multiAgentSystem.systemHealth === 'healthy');
+                }
+                
                 return data.status === 'ok';
             } catch (error) {
                 console.error('Health check failed:', error);
                 updateSystemStatus(false);
+                updateAgentStatus(false);
+                updateNetworkStatus(false);
                 return false;
             }
         }
 
         async function initDashboard() {
-            console.log('🚀 Universal Digital Identity Framework Dashboard');
-            console.log('🔗 Connected to Kaleido Hyperledger Fabric Network');
-            console.log('📊 Loading system metrics...');
+            console.log('🚀 Universal Digital Identity Framework - Multi-Agent Dashboard');
+            console.log('🤖 Initializing Multi-Agent Coordination System...');
             
             const isHealthy = await healthCheck();
+            
             if (isHealthy) {
-                await loadMetrics();
+                await Promise.all([
+                    loadMetrics(),
+                    loadAgentStatus(),
+                    loadCoordinationHistory()
+                ]);
             } else {
                 console.warn('⚠️ System appears offline - using fallback data');
                 showFallbackData();
@@ -638,35 +817,95 @@
             setInterval(async () => {
                 const healthy = await healthCheck();
                 if (healthy) {
-                    await loadMetrics();
+                    await Promise.all([
+                        loadMetrics(),
+                        loadAgentStatus(),
+                        loadCoordinationHistory()
+                    ]);
                 }
             }, 30000);
 
-            console.log('✅ Dashboard initialized successfully');
+            console.log('✅ Multi-Agent Dashboard initialized successfully');
         }
 
         function showFallbackData() {
             // Show some sample data when offline
             document.getElementById('total-assets').textContent = '1,247';
             document.getElementById('active-agents').textContent = '3';
-            document.getElementById('success-rate').textContent = '99.8%';
+            document.getElementById('consensus-rate').textContent = '99.2%';
             document.getElementById('response-time').textContent = '0.8s';
+            document.getElementById('byzantine-tolerance').textContent = 'ACTIVE';
             
-            const activityFeed = document.getElementById('activity-feed');
-            activityFeed.innerHTML = `
-                <div class="activity-item">
-                    <div class="activity-text">⚠️ System offline - showing cached data</div>
-                    <div class="activity-time">Just now</div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-text">🚗 Last vehicle registration</div>
-                    <div class="activity-time">5 min ago</div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-text">🐕 Pet identity verified</div>
-                    <div class="activity-time">12 min ago</div>
-                </div>
-            `;
+            // Mock agent data
+            const mockAgents = [
+                {
+                    agentId: 'agent-validator-001',
+                    specialization: 'validator',
+                    status: 'online',
+                    lastSeen: new Date(),
+                    performanceMetrics: {
+                        decisionsParticipated: 42,
+                        agreementRate: 0.95,
+                        avgResponseTime: 150
+                    },
+                    isByzantine: false
+                },
+                {
+                    agentId: 'agent-consensus-002',
+                    specialization: 'consensus',
+                    status: 'online',
+                    lastSeen: new Date(),
+                    performanceMetrics: {
+                        decisionsParticipated: 38,
+                        agreementRate: 0.97,
+                        avgResponseTime: 120
+                    },
+                    isByzantine: false
+                },
+                {
+                    agentId: 'agent-security-003',
+                    specialization: 'security',
+                    status: 'online',
+                    lastSeen: new Date(),
+                    performanceMetrics: {
+                        decisionsParticipated: 40,
+                        agreementRate: 0.92,
+                        avgResponseTime: 180
+                    },
+                    isByzantine: false
+                }
+            ];
+            
+            updateAgentGrid(mockAgents);
+            updateSystemMetrics({
+                onlineAgents: 3,
+                totalCoordinations: 127
+            });
+            
+            const mockHistory = [
+                {
+                    coordinationId: 'coord-offline-001',
+                    identityId: 'DEMO-VEH-12345',
+                    timestamp: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+                    participatingAgents: 3,
+                    processingTime: 250,
+                    finalDecision: 'APPROVED',
+                    consensus: { consensusRatio: 1.0 },
+                    byzantineDetected: false
+                },
+                {
+                    coordinationId: 'coord-offline-002',
+                    identityId: 'PET-COLLAR-678',
+                    timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+                    participatingAgents: 3,
+                    processingTime: 180,
+                    finalDecision: 'APPROVED',
+                    consensus: { consensusRatio: 0.67 },
+                    byzantineDetected: false
+                }
+            ];
+            
+            updateCoordinationHistory(mockHistory);
         }
 
         // Tab functionality
@@ -677,25 +916,34 @@
                     tabs.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
+                    const tabName = this.getAttribute('data-tab');
+                    console.log(`Switched to ${tabName} tab`);
+                    
                     // You could add tab content switching here
-                    console.log(`Switched to ${this.textContent} tab`);
+                    if (tabName === 'agents') {
+                        loadAgentStatus();
+                    } else if (tabName === 'coordination') {
+                        loadCoordinationHistory();
+                    }
                 });
             });
-        });
 
-        // Initialize the dashboard
-        initDashboard();
+            // Initialize the dashboard
+            initDashboard();
+        });
 
         // Console branding
         console.log('%c🌐 Universal Digital Identity Framework', 'color: #10b981; font-size: 18px; font-weight: bold;');
+        console.log('%c🤖 Multi-Agent Coordination System', 'color: #7c3aed; font-size: 16px; font-weight: bold;');
         console.log('%c🔗 Powered by Kaleido + Hyperledger Fabric', 'color: #60a5fa; font-size: 14px;');
         console.log('%c🚀 Deployed on Render', 'color: #34d399; font-size: 12px;');
-        console.log('%cAPI Endpoints:', 'color: #60a5fa; font-weight: bold; margin-top: 10px;');
-        console.log('%cGET  /health', 'color: #10b981; font-family: monospace;');
-        console.log('%cGET  /api/metrics', 'color: #10b981; font-family: monospace;');
-        console.log('%cGET  /api/identity/list', 'color: #10b981; font-family: monospace;');
-        console.log('%cPOST /api/identity/register', 'color: #fbbf24; font-family: monospace;');
-        console.log('%cPOST /api/demo/*', 'color: #f87171; font-family: monospace;');
+        console.log('%cMulti-Agent API Endpoints:', 'color: #60a5fa; font-weight: bold; margin-top: 10px;');
+        console.log('%cGET  /api/agents/status', 'color: #10b981; font-family: monospace;');
+        console.log('%cPOST /api/agents/coordinate/:identityId', 'color: #fbbf24; font-family: monospace;');
+        console.log('%cGET  /api/agents/coordination-history', 'color: #10b981; font-family: monospace;');
+        console.log('%cPOST /api/agents/simulate-byzantine', 'color: #f87171; font-family: monospace;');
+        console.log('%cPOST /api/demo/multi-agent-coordination', 'color: #7c3aed; font-family: monospace;');
+        console.log('%cPOST /api/demo/byzantine-fault-test', 'color: #dc2626; font-family: monospace;');
     </script>
 </body>
 </html>
