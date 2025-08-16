@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Digital Identity Framework</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 0 2rem;
+        }
+
+        .nav-tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            border-bottom-color: #4ade80;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-content {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+            grid-column: 1 / -1;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            color: #4ade80;
+            font-size: 1.2rem;
+        }
+
+        .demo-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .demo-button {
+            padding: 1rem;
+            background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.3);
+        }
+
+        .demo-button:active {
+            transform: translateY(0);
+        }
+
+        .demo-button.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .activity-feed {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-text {
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4ade80;
+            animation: spin 1s ease-in-out infinite;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-message, .error-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .success-message {
+            background: rgba(74, 222, 128, 0.2);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: #4ade80;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .api-endpoint {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .metrics-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Universal Digital Identity Framework</h1>
+        <div class="status-indicators">
+            <div class="status-item">
+                <div class="status-dot" id="system-status"></div>
+                <span id="system-text">System Online</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" id="agents-status"></div>
+                <span id="agents-text">22 Active Agents</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" id="network-status"></div>
+                <span id="network-text">Network Healthy</span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <div class="nav-tab active">Dashboard</div>
+        <div class="nav-tab">Asset Onboarding</div>
+        <div class="nav-tab">Agent Workflow</div>
+        <div class="nav-tab">Audit Logs</div>
+        <div class="nav-tab">Analytics</div>
+    </nav>
+
+    <main class="dashboard-content">
+        <div class="metrics-row">
+            <div class="metric-card">
+                <div class="metric-title">Total Assets</div>
+                <div class="metric-value" id="total-assets">Loading...</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Active Agents</div>
+                <div class="metric-value" id="active-agents">22</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Success Rate</div>
+                <div class="metric-value" id="success-rate">99.1%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Response Time</div>
+                <div class="metric-value" id="response-time">1.8s</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Quick Demo Scenarios</h3>
+            <div class="demo-buttons">
+                <button class="demo-button" onclick="runDemo('vehicle-registration')">
+                    Vehicle Registration Demo
+                </button>
+                <button class="demo-button" onclick="runDemo('byzantine-fault-test')">
+                    Byzantine Fault Test
+                </button>
+                <button class="demo-button" onclick="runDemo('cross-domain-query')">
+                    Cross-Domain Query
+                </button>
+            </div>
+            <div id="demo-results"></div>
+        </div>
+
+        <div class="card">
+            <h3>Recent Activity</h3>
+            <div class="activity-feed" id="activity-feed">
+                <div class="activity-item">
+                    <div class="activity-text">Loading recent activity...</div>
+                    <div class="activity-time">Just now</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>System Information</h3>
+            <div style="font-size: 0.9rem; line-height: 1.6;">
+                <p><strong>API Base URL:</strong></p>
+                <div class="api-endpoint" id="api-base-url">Loading...</div>
+                
+                <p style="margin-top: 1rem;"><strong>Blockchain Network:</strong></p>
+                <div style="margin: 0.5rem 0;">
+                    <div>✓ Hyperledger Fabric via Kaleido</div>
+                    <div>✓ Multi-organization consensus</div>
+                    <div>✓ Universal asset support</div>
+                </div>
+
+                <p style="margin-top: 1rem;"><strong>Supported Asset Types:</strong></p>
+                <div style="margin: 0.5rem 0;">
+                    <div>🚗 Vehicles (VIN-based)</div>
+                    <div>🐕 Pet Collars & Tags</div>
+                    <div>🌐 IoT Devices & Sensors</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE_URL = window.location.origin;
+        document.getElementById('api-base-url').textContent = API_BASE_URL;
+
+        async function runDemo(demoType) {
+            const button = event.target;
+            const resultsDiv = document.getElementById('demo-results');
+            
+            button.classList.add('loading');
+            button.innerHTML = `<span class="loading-spinner"></span>Running ${demoType}...`;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/demo/${demoType}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="success-message">
+                            <strong>${demoType} completed successfully!</strong>
+                            <pre style="margin-top: 0.5rem; font-size: 0.8rem;">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.error || 'Demo failed');
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error-message">
+                        <strong>Demo failed:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                button.classList.remove('loading');
+                button.innerHTML = button.textContent.replace('Running ', '').replace('...', '');
+                loadMetrics();
+            }
+        }
+
+        async function loadMetrics() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/metrics`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('total-assets').textContent = data.metrics.totalAssets.toLocaleString();
+                    document.getElementById('active-agents').textContent = data.metrics.activeAgents;
+                    document.getElementById('success-rate').textContent = data.metrics.successRate;
+                    document.getElementById('response-time').textContent = data.metrics.responseTime;
+                    
+                    const activityFeed = document.getElementById('activity-feed');
+                    activityFeed.innerHTML = data.recentActivity.map(activity => `
+                        <div class="activity-item">
+                            <div class="activity-text">${activity.action}</div>
+                            <div class="activity-time">${new Date(activity.timestamp).toLocaleTimeString()}</div>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('total-assets').textContent = 'Error';
+                }
+            } catch (error) {
+                console.error('Failed to load metrics:', error);
+                document.getElementById('total-assets').textContent = 'Offline';
+                updateSystemStatus(false);
+            }
+        }
+
+        function updateSystemStatus(isOnline = true) {
+            const systemStatus = document.getElementById('system-status');
+            const systemText = document.getElementById('system-text');
+            
+            if (isOnline) {
+                systemStatus.style.background = '#4ade80';
+                systemText.textContent = 'System Online';
+            } else {
+                systemStatus.style.background = '#ef4444';
+                systemText.textContent = 'System Offline';
+            }
+        }
+
+        async function healthCheck() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                updateSystemStatus(data.status === 'ok');
+            } catch (error) {
+                updateSystemStatus(false);
+            }
+        }
+
+        async function initDashboard() {
+            console.log('🚀 Universal Digital Identity Framework Dashboard');
+            console.log('📊 Loading system metrics...');
+            
+            await healthCheck();
+            await loadMetrics();
+            
+            setInterval(() => {
+                healthCheck();
+                loadMetrics();
+            }, 30000);
+
+            console.log('✅ Dashboard initialized successfully');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        initDashboard();
+
+        setTimeout(() => {
+            const mockActivity = [
+                { action: 'Vehicle VEH-123 registered', timestamp: new Date(Date.now() - 2 * 60 * 1000), type: 'vehicle' },
+                { action: 'Pet PET-456 service record added', timestamp: new Date(Date.now() - 5 * 60 * 1000), type: 'pet' },
+                { action: 'IoT device IOT-789 verified', timestamp: new Date(Date.now() - 8 * 60 * 1000), type: 'iot-device' },
+                { action: 'Cross-domain query completed', timestamp: new Date(Date.now() - 12 * 60 * 1000), type: 'system' }
+            ];
+
+            const activityFeed = document.getElementById('activity-feed');
+            if (!activityFeed.innerHTML.includes('registered') && !activityFeed.innerHTML.includes('verified')) {
+                activityFeed.innerHTML = mockActivity.map(activity => `
+                    <div class="activity-item">
+                        <div class="activity-text">${activity.action}</div>
+                        <div class="activity-time">${activity.timestamp.toLocaleTimeString()}</div>
+                    </div>
+                `).join('');
+            }
+        }, 2000);
+
+        console.log('%c🌐 Universal Digital Identity Framework', 'color: #4ade80; font-size: 16px; font-weight: bold;');
+        console.log('%cAPI Endpoints Available:', 'color: #60a5fa; font-weight: bold;');
+        console.log('%cGET  /health', 'color: #34d399; font-family: monospace;');
+        console.log('%cGET  /api/metrics', 'color: #34d399; font-family: monospace;');
+        console.log('%cGET  /api/identity/list', 'color: #34d399; font-family: monospace;');
+        console.log('%cPOST /api/identity/register', 'color: #fbbf24; font-family: monospace;');
+        console.log('%cPOST /api/demo/*', 'color: #f87171; font-family: monospace;');
+    </script>
+</body>
+</html>
